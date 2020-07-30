@@ -65,43 +65,43 @@
   <ItemGroup>
     <Compile Include="Assets\J2P\Scripts\Editor\JPhysicsSettingInspector.cs" />
     <Reference Include="UnityEditor.TestRunner">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TestRunner">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/UnityEngine.TestRunner.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/UnityEngine.TestRunner.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline.Editor">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VSCode.Editor">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
     </Reference>
     <Reference Include="Unity.CollabProxy.Editor">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rider.Editor">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Sprite.Editor">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Tilemap.Editor">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>D:/Unity2019/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -296,7 +296,7 @@
       <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/16.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/PackageCache/com.unity.ext.nunit@1.0.0/net35/unity-custom/nunit.framework.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/PackageCache/com.unity.ext.nunit@1.0.0/net35/unity-custom/nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>D:/Unity2019/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>

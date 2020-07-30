@@ -70,39 +70,41 @@
     <Compile Include="Assets\J2P\Scripts\JPhysicsManager.cs" />
     <Compile Include="Assets\J2P\Scripts\JPhysicsSetting.cs" />
     <Compile Include="Assets\J2P\Scripts\Utilities\Extension.cs" />
+    <Compile Include="Assets\J2P\Scripts\Utilities\JPhysics.cs" />
+    <Compile Include="Assets\J2P\Scripts\Utilities\JRaycastHit.cs" />
     <Compile Include="Assets\Test\Scripts\TestComponent.cs" />
     <Reference Include="Unity.Timeline.Editor">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VSCode.Editor">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
     </Reference>
     <Reference Include="Unity.CollabProxy.Editor">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rider.Editor">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Sprite.Editor">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Tilemap.Editor">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
-      <HintPath>D:/Unity2019/Projects/JPhysicsSystem/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+      <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>D:/Unity2019/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
