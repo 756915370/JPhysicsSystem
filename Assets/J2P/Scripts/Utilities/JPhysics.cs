@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace J2P
 {
-	//静态类，提供类似Unity.Physics的功能
+	//Similar to Unity.Physics
 	public static class JPhysics
 	{
 		/// <summary>

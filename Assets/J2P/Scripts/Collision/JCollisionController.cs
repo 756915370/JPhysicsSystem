@@ -7,7 +7,7 @@ namespace J2P
 {
 	public delegate void CollisionEvent( CollisionInfo collisionInfo );
 
-	public class JCollisionController : MonoBehaviour
+	public class JCollisionController : MonoBehaviour,IQuadTreeItem
 	{
 		[HideInInspector]
 		public int collisionMask;
@@ -16,7 +16,7 @@ namespace J2P
 
 		public int verticalRayCount = 4;
 
-		//进行射线检测时,把起点放在原碰撞框的顶点再往里缩这个距离
+		//When collision detection, place the start point at the vertex of the bounds with zoom in by this distance
 		public float _shrinkWidth = 0.1f;
 
 		public CollisionEvent onCollisionEnter;
@@ -46,6 +46,36 @@ namespace J2P
 			get
 			{
 				return 20;
+			}
+		}
+
+		public Vector2 size
+		{
+			get
+			{
+				return _bounds.size;
+			}
+		}
+
+		public Vector2 center
+		{
+			get
+			{
+				return _bounds.center;
+			}
+		}
+
+		private PositionInQuadTree _posInQuadTree;
+
+		public PositionInQuadTree posInQuadTree
+		{
+			get
+			{
+				return _posInQuadTree;
+			}
+			set
+			{
+				_posInQuadTree = value;
 			}
 		}
 

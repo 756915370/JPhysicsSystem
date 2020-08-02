@@ -65,14 +65,20 @@
   <ItemGroup>
     <Compile Include="Assets\J2P\Scripts\Collision\Collidioninfo.cs" />
     <Compile Include="Assets\J2P\Scripts\Collision\JCollisionController.cs" />
+    <Compile Include="Assets\J2P\Scripts\Collision\JPlatform.cs" />
     <Compile Include="Assets\J2P\Scripts\Collision\JRigidbody.cs" />
     <Compile Include="Assets\J2P\Scripts\Collision\RaycastOrigins.cs" />
     <Compile Include="Assets\J2P\Scripts\JPhysicsManager.cs" />
     <Compile Include="Assets\J2P\Scripts\JPhysicsSetting.cs" />
+    <Compile Include="Assets\J2P\Scripts\QuadTree\IQuadTreeItem.cs" />
+    <Compile Include="Assets\J2P\Scripts\QuadTree\PositionInQuadTree.cs" />
+    <Compile Include="Assets\J2P\Scripts\QuadTree\QuadTree.cs" />
+    <Compile Include="Assets\J2P\Scripts\QuadTree\QuadTreeNode.cs" />
     <Compile Include="Assets\J2P\Scripts\Utilities\Extension.cs" />
     <Compile Include="Assets\J2P\Scripts\Utilities\JPhysics.cs" />
     <Compile Include="Assets\J2P\Scripts\Utilities\JRaycastHit.cs" />
     <Compile Include="Assets\Test\Scripts\TestComponent.cs" />
+    <Compile Include="Assets\Test\Scripts\TestQuadTreeGenerator.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>

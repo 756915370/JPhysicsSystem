@@ -48,6 +48,8 @@ namespace J2P
 
 		private Dictionary<Collider2D, JRigidbody> _rigidbodies = new Dictionary<Collider2D, JRigidbody>();
 
+		private Dictionary<Collider2D, JPlatform> _platforms = new Dictionary<Collider2D, JPlatform>();
+
 		private WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
 
 		public JPhysicsSetting setting { get; private set; }
@@ -301,6 +303,31 @@ namespace J2P
 			JRigidbody rigidbody = null;
 			_rigidbodies.TryGetValue( collider, out rigidbody );
 			return rigidbody;
+		}
+
+		public void PushPlatform( JPlatform platform )
+		{
+			if( platform == null )
+			{
+				return;
+			}
+			if( !_platforms.ContainsKey( platform.collider ) )
+			{
+				_platforms.Add( platform.collider, platform );
+			}
+		}
+
+		public void RemovePlatform( JPlatform platform )
+		{
+			if( _platforms == null || _platforms.Count == 0 )
+			{
+				return;
+			}
+			if( platform == null )
+			{
+				return;
+			}
+			_platforms.Remove( platform.collider );
 		}
 	}
 }
