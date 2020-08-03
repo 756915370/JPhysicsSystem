@@ -1,38 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace J2P
+namespace J2P.Test
 {
-	public static class JPhysics
+	public class TestPhysics
 	{
-		//public static int Raycast( Vector2 origin, Vector2 direction, ref JRaycastHitList hitList, float distance, int layMask )
-		//{
-
-		//}
-
 		/// <summary>
-		/// 计算一条射线和AABB是否相交
+		/// 计算一条射线和AABB是否相交，返回交点
 		/// </summary>
 		/// <returns></returns>
-		public static void CalculateRayHit( Collider2D collider, Vector2 origin, Vector2 dir, ref JRaycastHitList hitList, float distance, ref int hitCount )
+		public static Vector2 CalculateRayHit( Collider2D collider, Vector2 origin, Vector2 dir, float distance )
 		{
-			if( RaycastHitExist( collider, hitList ) )
-			{
-				return;
-			}
-
 			var bounds = collider.bounds;
-			if( bounds.Contains( origin ) )
-			{
-				AddRayHitToList( collider, origin, ref hitList, ref hitCount );
-				return;
-			}
 			if( distance <= 0f )
 			{
-				return;
+				return Vector2.zero;
 			}
 
-			var hit = false;
 			var destPoint = origin + dir * distance;
 			//ax + by + c = 0
 			var a = destPoint.y - origin.y;
@@ -72,7 +56,6 @@ namespace J2P
 					if( y < yMax && y > yMin )
 					{
 						tempHitPoint.y = y;
-						hit = true;
 						var dis = ( tempHitPoint - origin ).magnitude;
 						if( dis < hitDistance )
 						{
@@ -88,7 +71,6 @@ namespace J2P
 					if( y < yMax && y > yMin )
 					{
 						tempHitPoint.y = y;
-						hit = true;
 						var dis = ( tempHitPoint - origin ).magnitude;
 						if( dis < hitDistance )
 						{
@@ -109,7 +91,6 @@ namespace J2P
 					if( x < xMax && x > xMin )
 					{
 						tempHitPoint.x = x;
-						hit = true;
 						var dis = ( tempHitPoint - origin ).magnitude;
 						if( dis < hitDistance )
 						{
@@ -125,7 +106,6 @@ namespace J2P
 					if( x < xMax && x > xMin )
 					{
 						tempHitPoint.x = x;
-						hit = true;
 						var dis = ( tempHitPoint - origin ).magnitude;
 						if( dis < hitDistance )
 						{
@@ -135,38 +115,7 @@ namespace J2P
 					}
 				}
 			}
-			if( hit )
-			{
-				AddRayHitToList( collider, origin, ref hitList, ref hitCount );
-			}
-		}
-
-		private static void AddRayHitToList( Collider2D collider, Vector2 origin, ref JRaycastHitList hitList, ref int hitCount )
-		{
-			hitCount++;
-			var rigidbody = collider.Rigidbody();
-			var raycastHit = new JRaycastHit( collider, 0, origin );
-			if( hitCount < hitList.maxLength - 1 )
-			{
-				hitList.Add( raycastHit );
-			}
-			else
-			{
-				Debug.LogError( rigidbody.gameObject.name + "'s collision count is greater than [" + hitList.count + "]" );
-			}
-		}
-
-		private static bool RaycastHitExist( Collider2D collider, JRaycastHitList hitList )
-		{
-			for( int i = 0; i < hitList.count; i++ )
-			{
-				var hit = hitList[i];
-				if( hit.collider == collider )
-				{
-					return true;
-				}
-			}
-			return false;
+			return hitPoint;
 		}
 	}
 }

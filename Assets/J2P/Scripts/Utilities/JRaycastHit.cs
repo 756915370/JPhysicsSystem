@@ -4,25 +4,55 @@ using System;
 
 namespace J2P
 {
+	public struct JRaycastHitList
+	{
+		public JRaycastHit[] hits;
+
+		public int count;
+
+		public int maxLength
+		{
+			get
+			{
+				return hits.Length;
+			}
+		}
+
+		public JRaycastHit this[int index]
+		{
+			get
+			{
+				return hits[index];
+			}
+		}
+
+		public void Add( JRaycastHit hit )
+		{
+			if( count >= hits.Length )
+			{
+				Debug.LogError( "HitArray is full." );
+			}
+			else
+			{
+				hits[count] = hit;
+				count++;
+			}
+		}
+	}
+
 	public struct JRaycastHit : IComparable
 	{
 		public Collider2D collider;
 
 		public float distance;
 
-		public Vector2 normal;
-
 		public Vector2 point;
 
-		public JRigidbody rigidbody;
-
-		public JRaycastHit( Collider2D collider, float distance, Vector2 normal, Vector2 point, JRigidbody rigidbody )
+		public JRaycastHit( Collider2D collider, float distance, Vector2 point)
 		{
 			this.collider = collider;
 			this.distance = distance;
-			this.normal = normal;
 			this.point = point;
-			this.rigidbody = rigidbody;
 		}
 
 		public static implicit operator bool( JRaycastHit hit )

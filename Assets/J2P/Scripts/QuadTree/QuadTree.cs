@@ -135,5 +135,58 @@ namespace J2P
 				}
 			}
 		}
+
+#if UNITY_EDITOR
+		public void DrawQuadTree()
+		{
+			var worldRect = _worldRect;
+			var leftBottom = worldRect.min;
+			var rightBottom = new Vector2( worldRect.xMax, worldRect.yMin );
+			var leftTop = new Vector2( worldRect.xMin, worldRect.yMax );
+			var height = _worldRect.height;
+			var width = _worldRect.width;
+
+			int rowCount, columnCount;
+
+			var colors = new Color[3] { Color.white, Color.yellow, Color.green };
+			for( int i = _maxDepth; i >= 0; i-- )
+			{
+				rowCount = columnCount = (int)Mathf.Pow( 2, i );
+				Gizmos.color = colors[( i ) % colors.Length];
+				//画每一行
+				var rowInteral = height / rowCount;
+				for( int r = 0; r <= rowCount; r++ )
+				{
+					if( i > 1 )
+					{
+						var pow = (int)Mathf.Pow( 2, i - 1 );
+						if( ( r ) % pow == 0 )
+						{
+							continue;
+						}
+					}
+					var startPos = leftBottom + new Vector2( 0, r * rowInteral );
+					var destPos = rightBottom + new Vector2( 0, r * rowInteral );
+					Gizmos.DrawLine( startPos, destPos );
+				}
+				//画每一列
+				var columnInteral = width / columnCount;
+				for( int c = 0; c <= columnCount; c++ )
+				{
+					if( i > 1 )
+					{
+						var pow = (int)Mathf.Pow( 2, i - 1 );
+						if( ( c ) % pow == 0 )
+						{
+							continue;
+						}
+					}
+					var startPos = leftBottom + new Vector2( c * columnInteral, 0 );
+					var destPos = leftTop + new Vector2( c * columnInteral, 0 );
+					Gizmos.DrawLine( startPos, destPos );
+				}
+			}
+		}
+#endif
 	}
 }

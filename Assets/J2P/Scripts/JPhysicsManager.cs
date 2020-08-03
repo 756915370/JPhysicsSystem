@@ -6,6 +6,8 @@ namespace J2P
 {
 	public class JPhysicsManager : MonoBehaviour
 	{
+		public static bool useUnityRayCast = false;
+
 		public static JPhysicsManager instance
 		{
 			get
@@ -52,12 +54,39 @@ namespace J2P
 
 		private WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
 
+		private QuadTree _quadTree;
+
+		public QuadTree quadTree
+		{
+			get
+			{
+				return _quadTree;
+			}
+		}
+
 		public JPhysicsSetting setting { get; private set; }
 
 		private void Awake()
 		{
 			this.setting = Instantiate( Resources.Load<JPhysicsSetting>( "JPhysics Settings" ) );
 			this.StartCoroutine( UpdateCollisions() );
+		}
+
+		private void Start()
+		{
+			foreach( JRigidbody rigidbody in _rigidbodies.Values )
+			{
+				_quadTree.UpdateItem( rigidbody );
+			}
+			foreach( JPlatform platform in _platforms.Values )
+			{
+				_quadTree.UpdateItem( platform );
+			}
+		}
+
+		public void CreateQuadTree( Rect worldRect, int maxDepth )
+		{
+			_quadTree = new QuadTree( worldRect, maxDepth );
 		}
 
 		private void FixedUpdate()
@@ -72,6 +101,10 @@ namespace J2P
 				}
 
 				rigidbody.Simulate( Time.fixedDeltaTime );
+				if( useUnityRayCast == false )
+				{
+					_quadTree.UpdateItem( rigidbody );
+				}
 			}
 		}
 

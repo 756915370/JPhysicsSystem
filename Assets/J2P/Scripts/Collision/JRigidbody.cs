@@ -106,10 +106,15 @@ namespace J2P
 			// Reset Collision Info Before Collision
 			this.ResetStatesBeforeCollision();
 
-			// Move
-			this.Move( _movement );
+			if( this.collider == null || !this.collider.enabled )
+			{
+				return;
+			}
 
-			// Fix Insertion
+			this.CollisionDetect();
+
+			this.Move();
+
 			this.FixInsertion();
 
 			//// Landing Platform
@@ -118,7 +123,6 @@ namespace J2P
 			//	_landingPlatform = null;
 			//}
 
-			// Fix Velocity
 			this.FixVelocity();
 
 			// Reset Collision Info After Collision
@@ -135,43 +139,6 @@ namespace J2P
 
 		private void ResetStatesAfterCollision()
 		{
-		}
-
-		public void Move( Vector2 movement )
-		{
-			if( this.collider == null || !this.collider.enabled )
-			{
-				return;
-			}
-
-			_movement.x = movement.x;
-			_movement.y = movement.y;
-
-			this.CollisionDetect();
-
-			this.MovePosition( ref _movement );
-		}
-
-		private void FixInsertion()
-		{
-			_currentDetectionHitColliders.Clear();
-		}
-
-		private void FixVelocity()
-		{
-			// The Horizontal velocity should be zero if the rigidbody is facing some 'solid' collider.
-			if( ( _velocity.x < 0.0f && _collisionInfo.isLeftCollision )
-				|| ( _velocity.x > 0.0f && _collisionInfo.isRightCollision ) )
-			{
-				_velocity.x = 0.0f;
-			}
-
-			// The Vertical velocity should be zero if the rigidbody is facing some 'solid' collider.
-			if( ( _velocity.y > 0.0f && _collisionInfo.isAboveCollision )
-				|| ( _velocity.y < 0.0f && _collisionInfo.isBelowCollision ) )
-			{
-				_velocity.y = 0.0f;
-			}
 		}
 
 		private void CollisionDetect()
@@ -197,6 +164,38 @@ namespace J2P
 
 			// Vertical
 			this.VerticalCollisionDetect();
+		}
+
+		public void Move()
+		{
+			if( this.collider == null || !this.collider.enabled )
+			{
+				return;
+			}
+
+			this.MovePosition( ref _movement );
+		}
+
+		private void FixInsertion()
+		{
+			_currentDetectionHitColliders.Clear();
+		}
+
+		private void FixVelocity()
+		{
+			// The Horizontal velocity should be zero if the rigidbody is facing some 'solid' collider.
+			if( ( _velocity.x < 0.0f && _collisionInfo.isLeftCollision )
+				|| ( _velocity.x > 0.0f && _collisionInfo.isRightCollision ) )
+			{
+				_velocity.x = 0.0f;
+			}
+
+			// The Vertical velocity should be zero if the rigidbody is facing some 'solid' collider.
+			if( ( _velocity.y > 0.0f && _collisionInfo.isAboveCollision )
+				|| ( _velocity.y < 0.0f && _collisionInfo.isBelowCollision ) )
+			{
+				_velocity.y = 0.0f;
+			}
 		}
 
 		private void MovePosition( ref Vector3 movement )
