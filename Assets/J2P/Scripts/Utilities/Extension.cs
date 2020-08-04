@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace J2P
@@ -39,6 +40,27 @@ namespace J2P
 					collisionEvent -= (CollisionEvent)d;
 				}
 			}
+		}
+
+		public static bool Intersects( this Rect rect, Rect target )
+		{
+			if( rect.yMin > target.yMax )
+			{
+				return false;
+			}
+			if( rect.yMax < target.yMin )
+			{
+				return false;
+			}
+			if( rect.xMax < target.xMin )
+			{
+				return false;
+			}
+			if( rect.xMin > target.xMax )
+			{
+				return false;
+			}
+			return true;
 		}
 	}
 }

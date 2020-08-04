@@ -9,6 +9,10 @@ namespace J2P
 
 		Vector2 center { get; }
 
+		Rect rect { get; }
+
+		Collider2D selfCollider { get;}
+
 		PositionInQuadTree posInQuadTree { get; set; }
 	}
 }

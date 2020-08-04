@@ -5,10 +5,61 @@ namespace J2P
 {
 	public static class JPhysics
 	{
-		//public static int Raycast( Vector2 origin, Vector2 direction, ref JRaycastHitList hitList, float distance, int layMask )
-		//{
+		private const float MINRECTWIDTH = 0.1F;
+		private const float MINRECTHEIGHT = 0.1f;
 
-		//}
+		/// <summary>
+		/// CreateRect By a 2 vector2 point
+		/// </summary>
+		public static Rect CreateRect( Vector2 start, Vector2 end )
+		{
+			var segment = end - start;
+			var rect = new Rect();
+
+			rect.x = Mathf.Min( start.x, end.x );
+			rect.y = Mathf.Min( start.y, end.y );
+
+			rect.width = Mathf.Abs( segment.x );
+			rect.height = Mathf.Abs( segment.y );
+			if( rect.width == 0f )
+			{
+				rect.width = MINRECTWIDTH;
+			}
+			if( rect.height == 0f )
+			{
+				rect.height = MINRECTHEIGHT;
+			}
+
+			return rect;
+		}
+
+		public static void Raycast( QuadTree quadTree, Vector2 origin, Vector2 direction, ref JRaycastHitList hitList, float distance, int layMask )
+		{
+			var hitCount = 0;
+			var ray = direction.normalized * distance;
+			var destPoint = origin + ray;
+
+			var rayRect = CreateRect( origin, destPoint );
+			var itemList = quadTree.GetItems( rayRect );
+			foreach( IQuadTreeItem item in itemList )
+			{
+				var collider = item.selfCollider;
+				var layer = collider.gameObject.layer;
+				//if( !layMask.Contains( layer ) )
+				//{
+				//	continue;
+				//}
+				if( !collider.gameObject.activeInHierarchy )
+				{
+					continue;
+				}
+				if( !collider.enabled )
+				{
+					continue;
+				}
+				CalculateRayHit( collider, origin, direction, ref hitList, distance, ref hitCount );
+			}
+		}
 
 		/// <summary>
 		/// 计算一条射线和AABB是否相交
@@ -24,7 +75,7 @@ namespace J2P
 			var bounds = collider.bounds;
 			if( bounds.Contains( origin ) )
 			{
-				AddRayHitToList( collider, origin, ref hitList, ref hitCount );
+				AddRayHitToList( collider, origin, 0f, ref hitList, ref hitCount );
 				return;
 			}
 			if( distance <= 0f )
@@ -137,15 +188,15 @@ namespace J2P
 			}
 			if( hit )
 			{
-				AddRayHitToList( collider, origin, ref hitList, ref hitCount );
+				AddRayHitToList( collider, hitPoint, hitDistance, ref hitList, ref hitCount );
 			}
 		}
 
-		private static void AddRayHitToList( Collider2D collider, Vector2 origin, ref JRaycastHitList hitList, ref int hitCount )
+		private static void AddRayHitToList( Collider2D collider, Vector2 hitPoint, float distance, ref JRaycastHitList hitList, ref int hitCount )
 		{
 			hitCount++;
 			var rigidbody = collider.Rigidbody();
-			var raycastHit = new JRaycastHit( collider, 0, origin );
+			var raycastHit = new JRaycastHit( collider, distance, hitPoint );
 			if( hitCount < hitList.maxLength - 1 )
 			{
 				hitList.Add( raycastHit );

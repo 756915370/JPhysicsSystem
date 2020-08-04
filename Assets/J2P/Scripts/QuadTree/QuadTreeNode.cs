@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Boo.Lang;
+using System.Collections.Generic;
 
 namespace J2P
 {
@@ -59,6 +59,27 @@ namespace J2P
 		public void RemoveItem( IQuadTreeItem item )
 		{
 			_items.Remove( item );
+		}
+
+		public void GetItems( Rect rect, ref List<IQuadTreeItem> itemsFound )
+		{
+			if( _rect.Intersects( rect ) )
+			{
+				foreach( IQuadTreeItem item in _items )
+				{
+					if( item.rect.Intersects( rect ))
+					{
+						itemsFound.Add( item );
+					}
+				}
+				if( _isLeaf == false )
+				{
+					foreach( var node in _childNodes )
+					{
+						node.GetItems( rect, ref itemsFound );
+					}
+				}
+			}
 		}
 	}
 }

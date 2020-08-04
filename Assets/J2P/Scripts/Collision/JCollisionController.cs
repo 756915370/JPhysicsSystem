@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Runtime.InteropServices;
 
 namespace J2P
 {
@@ -27,9 +28,17 @@ namespace J2P
 
 		public CollisionEvent onTriggerExit;
 
-		public new Collider2D collider { get; private set; }
+		private Collider2D _collider2D;
 
-		protected Bounds _bounds { get { return collider.bounds; } }
+		public Collider2D selfCollider
+		{
+			get
+			{
+				return _collider2D;
+			}
+		}
+
+		protected Bounds _bounds { get { return selfCollider.bounds; } }
 
 		public bool showDebugGizoms = false;
 
@@ -40,6 +49,10 @@ namespace J2P
 		protected RaycastOrigins _raycastOrigins = new RaycastOrigins();
 
 		protected RaycastHit2D[] _raycastHit2D;
+
+		private PositionInQuadTree _posInQuadTree;
+
+		private Rect _rect;
 
 		protected virtual int _maxHitCollidersCount
 		{
@@ -65,7 +78,13 @@ namespace J2P
 			}
 		}
 
-		private PositionInQuadTree _posInQuadTree;
+		public Rect rect
+		{
+			get
+			{
+				return _rect;
+			}
+		}
 
 		public PositionInQuadTree posInQuadTree
 		{
@@ -88,7 +107,11 @@ namespace J2P
 
 		protected virtual void Awake()
 		{
-			this.collider = this.gameObject.GetComponent<Collider2D>();
+			_collider2D = this.gameObject.GetComponent<Collider2D>();
+
+			Vector2 rectMin = _bounds.min;
+			_rect = new Rect( rectMin, _bounds.size );
+
 			_raycastHit2D = new RaycastHit2D[_maxHitCollidersCount];
 			_transform = this.gameObject.transform;
 		}

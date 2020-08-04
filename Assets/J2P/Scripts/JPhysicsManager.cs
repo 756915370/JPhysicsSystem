@@ -301,9 +301,9 @@ namespace J2P
 				return;
 			}
 
-			if( !_rigidbodies.ContainsKey( rigidbody.collider ) )
+			if( !_rigidbodies.ContainsKey( rigidbody.selfCollider ) )
 			{
-				_rigidbodies.Add( rigidbody.collider, rigidbody );
+				_rigidbodies.Add( rigidbody.selfCollider, rigidbody );
 			}
 			else
 			{
@@ -323,7 +323,7 @@ namespace J2P
 				return;
 			}
 
-			_rigidbodies.Remove( rigidbody.collider );
+			_rigidbodies.Remove( rigidbody.selfCollider );
 		}
 
 		public JRigidbody GetRigidbody( Collider2D collider )
@@ -344,9 +344,9 @@ namespace J2P
 			{
 				return;
 			}
-			if( !_platforms.ContainsKey( platform.collider ) )
+			if( !_platforms.ContainsKey( platform.selfCollider ) )
 			{
-				_platforms.Add( platform.collider, platform );
+				_platforms.Add( platform.selfCollider, platform );
 			}
 		}
 
@@ -360,7 +360,7 @@ namespace J2P
 			{
 				return;
 			}
-			_platforms.Remove( platform.collider );
+			_platforms.Remove( platform.selfCollider );
 		}
 	}
 }

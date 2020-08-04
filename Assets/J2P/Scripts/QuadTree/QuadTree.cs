@@ -15,6 +15,8 @@ namespace J2P
 
 		private QuadTreeNode _root;
 
+		private List<IQuadTreeItem> _cacheItemsFound = new List<IQuadTreeItem>();
+
 		public bool debug { get; set; }
 
 		public Rect worldRect
@@ -52,11 +54,10 @@ namespace J2P
 			return -1;
 		}
 
-		public PositionInQuadTree GetPosInfo( IQuadTreeItem item )
+		public PositionInQuadTree GetPosInfo( Vector2 size, Vector2 center )
 		{
-			var depth = GetDepth( item.size );
+			var depth = GetDepth( size );
 			var gridsize = _gridSizes[depth];
-			var center = item.center;
 
 			int row = Mathf.FloorToInt( ( center.y - _worldRect.yMin ) / gridsize.y );
 			int column = Mathf.FloorToInt( ( center.x - _worldRect.xMin ) / gridsize.x );
@@ -92,7 +93,7 @@ namespace J2P
 
 		public void UpdateItem( IQuadTreeItem item )
 		{
-			var newPosInfo = GetPosInfo( item );
+			var newPosInfo = GetPosInfo( item.size, item.center );
 			if( newPosInfo.Equals( item.posInQuadTree ) )
 			{
 				return;
@@ -134,6 +135,16 @@ namespace J2P
 					currentParent = currentParent.childNodes[currentDepthPosInfo.rowIndex, currentDepthPosInfo.columnIndex];
 				}
 			}
+		}
+
+		/// <summary>
+		/// Get items that might intersect with the rayRect
+		/// </summary>
+		public List<IQuadTreeItem> GetItems( Rect rayRect )
+		{
+			_cacheItemsFound.Clear();
+			_root.GetItems( rayRect, ref _cacheItemsFound );
+			return _cacheItemsFound;
 		}
 
 #if UNITY_EDITOR

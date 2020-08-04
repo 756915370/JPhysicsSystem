@@ -81,7 +81,7 @@ namespace J2P
 			this.collisionMask = _physicsManager.setting.GetCollisionMask( this.gameObject.layer );
 
 			// Add myself's collider to ignoredColliders list
-			_ignoredColliders.Add( this.collider );
+			_ignoredColliders.Add( this.selfCollider );
 		}
 
 		private void OnDestroy()
@@ -106,7 +106,7 @@ namespace J2P
 			// Reset Collision Info Before Collision
 			this.ResetStatesBeforeCollision();
 
-			if( this.collider == null || !this.collider.enabled )
+			if( this.selfCollider == null || !this.selfCollider.enabled )
 			{
 				return;
 			}
@@ -131,7 +131,7 @@ namespace J2P
 
 		private void ResetStatesBeforeCollision()
 		{
-			_colliderIsTrigger = this.collider.isTrigger;
+			_colliderIsTrigger = this.selfCollider.isTrigger;
 			_collisionInfo.Reset();
 			_triggerInfo.Reset();
 			_raycastOrigins.Reset();
@@ -168,7 +168,7 @@ namespace J2P
 
 		public void Move()
 		{
-			if( this.collider == null || !this.collider.enabled )
+			if( this.selfCollider == null || !this.selfCollider.enabled )
 			{
 				return;
 			}
@@ -264,7 +264,7 @@ namespace J2P
 			}
 
 			// Collision Info
-			_collisionInfo.collider = this.collider;
+			_collisionInfo.collider = this.selfCollider;
 			_collisionInfo.hitCollider = hitCollider;
 			_collisionInfo.position = hit.point;
 
@@ -338,7 +338,7 @@ namespace J2P
 			}
 
 			// Collision Info
-			_collisionInfo.collider = this.collider;
+			_collisionInfo.collider = this.selfCollider;
 			_collisionInfo.hitCollider = hitCollider;
 			_collisionInfo.position = hit.point;
 
@@ -376,7 +376,7 @@ namespace J2P
 			// Trigger?
 			if( hitCollider.isTrigger || _colliderIsTrigger )
 			{
-				_triggerInfo.collider = this.collider;
+				_triggerInfo.collider = this.selfCollider;
 				_triggerInfo.hitCollider = hitCollider;
 				_triggerInfo.position.x = hit.point.x;
 				_triggerInfo.position.y = hit.point.y;

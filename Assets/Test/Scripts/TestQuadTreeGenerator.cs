@@ -12,6 +12,10 @@ namespace J2P.Test
 
 		public int maxDepth;
 
+		public Transform startPoint;
+
+		public Transform endPoint;
+
 		// Use this for initialization
 		void Start()
 		{
@@ -19,8 +23,20 @@ namespace J2P.Test
 			var worldRect = new Rect( rectPos, new Vector2( width, height ) );
 			JPhysicsManager.instance.CreateQuadTree( worldRect, maxDepth );
 			JPhysicsManager.instance.quadTree.debug = true;
+			
 		}
 
+		private void Update()
+		{
+			if( Input.GetKeyDown( KeyCode.K ) )
+			{
+				var quadTree = JPhysicsManager.instance.quadTree;
+				var dir = endPoint.position - startPoint.position;
+				var length = ( endPoint.position - startPoint.position ).magnitude;
+				var hitList = new JRaycastHitList(10);
+				JPhysics.Raycast( quadTree, startPoint.position, dir, ref hitList, length, 0 );
+			}
+		}
 #if UNITY_EDITOR
 		private void OnDrawGizmos()
 		{

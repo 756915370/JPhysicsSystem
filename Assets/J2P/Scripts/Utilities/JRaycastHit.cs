@@ -26,6 +26,12 @@ namespace J2P
 			}
 		}
 
+		public JRaycastHitList( int length )
+		{
+			hits = new JRaycastHit[length];
+			count = 0;
+		}
+
 		public void Add( JRaycastHit hit )
 		{
 			if( count >= hits.Length )
