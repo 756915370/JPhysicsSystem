@@ -12,23 +12,75 @@ namespace J2P
 	{
 		public PositionInQuadTreeDepth[] posInDepths;
 
+		public bool inRoot;
+
+		public int storeDepth;
+
+		public PositionInQuadTree( int maxDepth )
+		{
+			posInDepths = new PositionInQuadTreeDepth[maxDepth];
+			for( int i = 0; i < posInDepths.Length; i++ )
+			{
+				posInDepths[i].rowIndex = -1;
+				posInDepths[i].columnIndex = -1;
+			}
+			inRoot = false;
+			storeDepth = 0;
+		}
+
+		public void Copy( PositionInQuadTree other )
+		{
+			this.storeDepth = other.storeDepth;
+			this.inRoot = other.inRoot;
+			for( int i = 0; i < other.storeDepth; i++ )
+			{
+				this.posInDepths[i].rowIndex = other.posInDepths[i].rowIndex;
+				this.posInDepths[i].columnIndex = other.posInDepths[i].columnIndex;
+			}
+		}
+
+		public void Reset()
+		{
+			inRoot = false;
+			for( int i = 0; i < posInDepths.Length; i++ )
+			{
+				posInDepths[i].rowIndex = -1;
+				posInDepths[i].columnIndex = -1;
+			}
+			storeDepth = 0;
+		}
+
 		public override string ToString()
 		{
 			if( posInDepths == null )
 			{
-				return string.Empty;
+				if( inRoot )
+				{
+					return "In Root";
+				}
+				else
+				{
+					return string.Empty;
+				}
 			}
 			var sb = new StringBuilder();
 			for( int i = 0; i < posInDepths.Length; i++ )
 			{
-				sb.AppendLine( string.Format( "Depth:{0} index:{1},{2}", i, posInDepths[i].rowIndex, posInDepths[i].columnIndex ) );
+				if( posInDepths[i].rowIndex != -1 )
+				{
+					sb.AppendLine( string.Format( "Depth:{0} index:{1},{2}", i, posInDepths[i].rowIndex, posInDepths[i].columnIndex ) );
+				}
 			}
 			return sb.ToString();
 		}
 
 		public bool Equals( PositionInQuadTree other )
 		{
-			if( other.posInDepths != null && this.posInDepths != null && other.posInDepths.Length == this.posInDepths.Length )
+			if( this.inRoot != other.inRoot )
+			{
+				return false;
+			}
+			if( other.posInDepths.Length == this.posInDepths.Length )
 			{
 				for( int i = 0; i < posInDepths.Length; i++ )
 				{

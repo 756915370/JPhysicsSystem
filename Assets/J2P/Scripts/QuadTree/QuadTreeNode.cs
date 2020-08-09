@@ -6,38 +6,37 @@ namespace J2P
 {
 	public class QuadTreeNode
 	{
-		//Use a two-dimensional array to store child nodes
-		//[0,0] is leftBottom，[0,1] is rightBottom，[1，0] is leftTop，[1,1] is rightTop
-		private QuadTreeNode[,] _childNodes;
+		//Include children's items
+		public int totalItemsCount { get; set; }
 
-		private bool _isLeaf;
+		public bool isLeaf { get; }
 
-		private Rect _rect;
+		public List<IQuadTreeItem> items { get; } = new List<IQuadTreeItem>();
 
-		private List<IQuadTreeItem> _items = new List<IQuadTreeItem>();
+		public Rect rect { get; }
 
-		public QuadTreeNode[,] childNodes
-		{
-			get
-			{
-				return _childNodes;
-			}
-		}
+		public Rect looseRect { get; }
+
+		public QuadTreeNode[,] childNodes { get; }
 
 		public QuadTreeNode( Rect rect, int depth, int maxDepth )
 		{
-			_rect = rect;
+			this.rect = rect;
+			var looseRectSize = 2 * rect.size;
+			var looseRectPos = this.rect.center - this.rect.size;
+			this.looseRect = new Rect( looseRectPos, looseRectSize );
+
 			if( depth == maxDepth )
 			{
-				_isLeaf = true;
+				isLeaf = true;
 			}
 			else
 			{
-				_isLeaf = false;
+				isLeaf = false;
 			}
-			if( _isLeaf == false )
+			if( isLeaf == false )
 			{
-				_childNodes = new QuadTreeNode[2, 2];
+				childNodes = new QuadTreeNode[2, 2];
 				var childSize = rect.size / 2;
 				for( int i = 0; i < 2; i++ )
 				{
@@ -45,7 +44,7 @@ namespace J2P
 					{
 						var childRectMin = rect.min + new Vector2( j * childSize.x, i * childSize.y );
 						var childRect = new Rect( childRectMin, childSize );
-						_childNodes[i, j] = new QuadTreeNode( childRect, depth + 1, maxDepth );
+						childNodes[i, j] = new QuadTreeNode( childRect, depth + 1, maxDepth );
 					}
 				}
 			}
@@ -53,33 +52,14 @@ namespace J2P
 
 		public void AddItem( IQuadTreeItem item )
 		{
-			_items.Add( item );
+			items.Add( item );
+			totalItemsCount += 1;
 		}
 
 		public void RemoveItem( IQuadTreeItem item )
 		{
-			_items.Remove( item );
-		}
-
-		public void GetItems( Rect rect, ref List<IQuadTreeItem> itemsFound )
-		{
-			if( _rect.Intersects( rect ) )
-			{
-				foreach( IQuadTreeItem item in _items )
-				{
-					if( item.rect.Intersects( rect ))
-					{
-						itemsFound.Add( item );
-					}
-				}
-				if( _isLeaf == false )
-				{
-					foreach( var node in _childNodes )
-					{
-						node.GetItems( rect, ref itemsFound );
-					}
-				}
-			}
+			totalItemsCount -= 1;
+			items.Remove( item );
 		}
 	}
 }

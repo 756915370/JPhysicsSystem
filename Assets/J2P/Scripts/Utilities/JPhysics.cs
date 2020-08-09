@@ -45,10 +45,10 @@ namespace J2P
 			{
 				var collider = item.selfCollider;
 				var layer = collider.gameObject.layer;
-				//if( !layMask.Contains( layer ) )
-				//{
-				//	continue;
-				//}
+				if( !layMask.Contains( layer ) )
+				{
+					continue;
+				}
 				if( !collider.gameObject.activeInHierarchy )
 				{
 					continue;
@@ -195,15 +195,13 @@ namespace J2P
 		private static void AddRayHitToList( Collider2D collider, Vector2 hitPoint, float distance, ref JRaycastHitList hitList, ref int hitCount )
 		{
 			hitCount++;
-			var rigidbody = collider.Rigidbody();
-			var raycastHit = new JRaycastHit( collider, distance, hitPoint );
 			if( hitCount < hitList.maxLength - 1 )
 			{
-				hitList.Add( raycastHit );
+				hitList.Add( collider, distance, hitPoint );
 			}
 			else
 			{
-				Debug.LogError( rigidbody.gameObject.name + "'s collision count is greater than [" + hitList.count + "]" );
+				Debug.LogError( collider.gameObject.name + "'s collision count is greater than [" + hitList.count + "]" );
 			}
 		}
 

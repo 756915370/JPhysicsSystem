@@ -17,7 +17,17 @@ namespace J2P
 
 		private List<IQuadTreeItem> _cacheItemsFound = new List<IQuadTreeItem>();
 
+		private Queue<QuadTreeNode> _traverseNodeQueue = new Queue<QuadTreeNode>();
+
 		public bool debug { get; set; }
+
+		public int maxDepth
+		{
+			get
+			{
+				return _maxDepth;
+			}
+		}
 
 		public Rect worldRect
 		{
@@ -54,9 +64,16 @@ namespace J2P
 			return -1;
 		}
 
-		public PositionInQuadTree GetPosInfo( Vector2 size, Vector2 center )
+		public void GetPosInfo( Vector2 size, Vector2 center, ref PositionInQuadTree posInfo )
 		{
+			posInfo.Reset();
+
 			var depth = GetDepth( size );
+			if( depth == 0 )
+			{
+				posInfo.inRoot = true;
+				return;
+			}
 			var gridsize = _gridSizes[depth];
 
 			int row = Mathf.FloorToInt( ( center.y - _worldRect.yMin ) / gridsize.y );
@@ -66,9 +83,7 @@ namespace J2P
 			int tempColumn = column;
 
 			var storeDepth = 0;
-			var posInfo = new PositionInQuadTree();
-			posInfo.posInDepths = new PositionInQuadTreeDepth[depth];
-
+			posInfo.storeDepth = depth;
 			for( int i = depth - 1; i >= 0; i-- )
 			{
 				int div = (int)Mathf.Pow( 2, i );
@@ -88,23 +103,24 @@ namespace J2P
 				posInfo.posInDepths[storeDepth].columnIndex = columnIndex;
 				storeDepth++;
 			}
-			return posInfo;
 		}
 
 		public void UpdateItem( IQuadTreeItem item )
 		{
-			var newPosInfo = GetPosInfo( item.size, item.center );
-			if( newPosInfo.Equals( item.posInQuadTree ) )
+			var newPosInfo = item.currentPosInQuadTree;
+			GetPosInfo( item.size, item.center, ref newPosInfo );
+			if( newPosInfo.Equals( item.lastPosInQuadTree ) )
 			{
 				return;
 			}
 			var currentParent = _root;
-			if( item.posInQuadTree.posInDepths != null )
+			if( item.lastPosInQuadTree.posInDepths != null )
 			{
-				for( int i = 0; i < item.posInQuadTree.posInDepths.Length; i++ )
+				for( int i = 0; i < item.lastPosInQuadTree.storeDepth; i++ )
 				{
-					var currentDepthPosInfo = item.posInQuadTree.posInDepths[i];
-					if( i == item.posInQuadTree.posInDepths.Length - 1 )
+					var currentDepthPosInfo = item.lastPosInQuadTree.posInDepths[i];
+					currentParent.totalItemsCount -= 1;
+					if( i == item.lastPosInQuadTree.storeDepth - 1 )
 					{
 						currentParent.childNodes[currentDepthPosInfo.rowIndex, currentDepthPosInfo.columnIndex].RemoveItem( item );
 					}
@@ -116,17 +132,26 @@ namespace J2P
 			}
 			if( this.debug )
 			{
-				Debug.Log( "Remove item in:" + item.posInQuadTree );
+				Debug.Log( "Remove item in:" + item.lastPosInQuadTree );
 				Debug.Log( "Add item in:" + newPosInfo );
 			}
 
-			item.posInQuadTree = newPosInfo;
+			//item.currentPosInQuadTree.Copy( newPosInfo );
+			var lastPos = item.lastPosInQuadTree;
+			lastPos.Copy( newPosInfo );
+			item.lastPosInQuadTree = lastPos;
 
 			currentParent = _root;
-			for( int i = 0; i < newPosInfo.posInDepths.Length; i++ )
+			if( item.lastPosInQuadTree.inRoot )
+			{
+				_root.AddItem( item );
+				return;
+			}
+			for( int i = 0; i < newPosInfo.storeDepth; i++ )
 			{
 				var currentDepthPosInfo = newPosInfo.posInDepths[i];
-				if( i == newPosInfo.posInDepths.Length - 1 )
+				currentParent.totalItemsCount += 1;
+				if( i == newPosInfo.storeDepth - 1 )
 				{
 					currentParent.childNodes[currentDepthPosInfo.rowIndex, currentDepthPosInfo.columnIndex].AddItem( item );
 				}
@@ -143,61 +168,36 @@ namespace J2P
 		public List<IQuadTreeItem> GetItems( Rect rayRect )
 		{
 			_cacheItemsFound.Clear();
-			_root.GetItems( rayRect, ref _cacheItemsFound );
+			_traverseNodeQueue.Clear();
+			AddNodeToTraverseList( _root, rayRect );
+			while( _traverseNodeQueue.Count > 0 )
+			{
+				var currentChild = _traverseNodeQueue.Dequeue();
+				foreach( IQuadTreeItem item in currentChild.items )
+				{
+					if( item.rect.Intersects( rayRect ) )
+					{
+						_cacheItemsFound.Add( item );
+					}
+				}
+
+				if( currentChild.isLeaf == false )
+				{
+					foreach( var node in currentChild.childNodes )
+					{
+						AddNodeToTraverseList( node, rayRect );
+					}
+				}
+			}
 			return _cacheItemsFound;
 		}
 
-#if UNITY_EDITOR
-		public void DrawQuadTree()
+		private void AddNodeToTraverseList( QuadTreeNode node, Rect rayRect )
 		{
-			var worldRect = _worldRect;
-			var leftBottom = worldRect.min;
-			var rightBottom = new Vector2( worldRect.xMax, worldRect.yMin );
-			var leftTop = new Vector2( worldRect.xMin, worldRect.yMax );
-			var height = _worldRect.height;
-			var width = _worldRect.width;
-
-			int rowCount, columnCount;
-
-			var colors = new Color[3] { Color.white, Color.yellow, Color.green };
-			for( int i = _maxDepth; i >= 0; i-- )
+			if( node.totalItemsCount > 0 && node.looseRect.Intersects( rayRect ) )
 			{
-				rowCount = columnCount = (int)Mathf.Pow( 2, i );
-				Gizmos.color = colors[( i ) % colors.Length];
-				//画每一行
-				var rowInteral = height / rowCount;
-				for( int r = 0; r <= rowCount; r++ )
-				{
-					if( i > 1 )
-					{
-						var pow = (int)Mathf.Pow( 2, i - 1 );
-						if( ( r ) % pow == 0 )
-						{
-							continue;
-						}
-					}
-					var startPos = leftBottom + new Vector2( 0, r * rowInteral );
-					var destPos = rightBottom + new Vector2( 0, r * rowInteral );
-					Gizmos.DrawLine( startPos, destPos );
-				}
-				//画每一列
-				var columnInteral = width / columnCount;
-				for( int c = 0; c <= columnCount; c++ )
-				{
-					if( i > 1 )
-					{
-						var pow = (int)Mathf.Pow( 2, i - 1 );
-						if( ( c ) % pow == 0 )
-						{
-							continue;
-						}
-					}
-					var startPos = leftBottom + new Vector2( c * columnInteral, 0 );
-					var destPos = leftTop + new Vector2( c * columnInteral, 0 );
-					Gizmos.DrawLine( startPos, destPos );
-				}
+				_traverseNodeQueue.Enqueue( node );
 			}
 		}
-#endif
 	}
 }

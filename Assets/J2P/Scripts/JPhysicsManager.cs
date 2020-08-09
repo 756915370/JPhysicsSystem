@@ -6,7 +6,7 @@ namespace J2P
 {
 	public class JPhysicsManager : MonoBehaviour
 	{
-		public static bool useUnityRayCast = false;
+		public static bool useUnityRayCast = true;
 
 		public static JPhysicsManager instance
 		{
@@ -17,7 +17,7 @@ namespace J2P
 					var obj = new GameObject( "Physics Manager" );
 					_instance = obj.AddComponent<JPhysicsManager>();
 
-					DontDestroyOnLoad( obj );
+					//DontDestroyOnLoad( obj );
 				}
 				return _instance;
 			}
@@ -74,13 +74,18 @@ namespace J2P
 
 		private void Start()
 		{
-			foreach( JRigidbody rigidbody in _rigidbodies.Values )
+			if( useUnityRayCast == false )
 			{
-				_quadTree.UpdateItem( rigidbody );
-			}
-			foreach( JPlatform platform in _platforms.Values )
-			{
-				_quadTree.UpdateItem( platform );
+				foreach( JRigidbody rigidbody in _rigidbodies.Values )
+				{
+					rigidbody.InitializePosInQuadTree( _quadTree );
+					_quadTree.UpdateItem( rigidbody );
+				}
+				foreach( JPlatform platform in _platforms.Values )
+				{
+					platform.InitializePosInQuadTree( _quadTree );
+					_quadTree.UpdateItem( platform );
+				}
 			}
 		}
 

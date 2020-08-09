@@ -81,6 +81,7 @@
     <Compile Include="Assets\Test\Scripts\TestPhysics.cs" />
     <Compile Include="Assets\Test\Scripts\TestQuadTreeGenerator.cs" />
     <Compile Include="Assets\Test\Scripts\TestRayHit.cs" />
+    <Compile Include="Assets\Test\Scripts\TestRigidbodyMove.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>F:/Git/JPhysicsSystem/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>

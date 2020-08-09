@@ -13,6 +13,8 @@ namespace J2P
 
 		Collider2D selfCollider { get;}
 
-		PositionInQuadTree posInQuadTree { get; set; }
+		PositionInQuadTree lastPosInQuadTree { get; set; }
+
+		PositionInQuadTree currentPosInQuadTree { get; set; }
 	}
 }

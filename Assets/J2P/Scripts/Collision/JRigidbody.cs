@@ -2,12 +2,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace J2P
 {
 	public class JRigidbody : JCollisionController
 	{
+		public enum CollisionDetectionMode
+		{
+			WhenMoving = 0,
+			Continuous = 1
+		}
+
 		public float gravityScale = 1.0f;
+
+		public CollisionDetectionMode collisionDetectionMode;
 
 		private Vector2 _velocity;
 
@@ -143,6 +152,7 @@ namespace J2P
 
 		private void CollisionDetect()
 		{
+			Profiler.BeginSample( "CollisionDetect" );
 			// Clear Hit Triggers
 			_currentDetectionHitTriggers.Clear();
 			_currentDetectionHitColliders.Clear();
@@ -164,6 +174,7 @@ namespace J2P
 
 			// Vertical
 			this.VerticalCollisionDetect();
+			Profiler.EndSample();
 		}
 
 		public void Move()
@@ -174,6 +185,7 @@ namespace J2P
 			}
 
 			this.MovePosition( ref _movement );
+			this.UpdateRect();
 		}
 
 		private void FixInsertion()
@@ -220,45 +232,72 @@ namespace J2P
 
 		private void HorizontalCollisionDetect()
 		{
+			int detectionCount = 1;
 			if( _movement.x == 0 )
 			{
-				return;
+				if( this.collisionDetectionMode == CollisionDetectionMode.WhenMoving )
+				{
+					return;
+				}
+				detectionCount = 2;
 			}
 
 			var directionX = _movement.x >= 0 ? 1 : -1;
-			var rayOrigin = ( directionX == 1 ) ? _raycastOrigins.bottomRight : _raycastOrigins.bottomLeft;
 
-			//因为起点往里缩了,所以此时射线长度应该加上这个内缩的距离
-			var rayLength = Mathf.Abs( _movement.x ) + _shrinkWidth;
-
-			for( int i = 0; i < this.horizontalRayCount; i++ )
+			for( int d = 0; d < detectionCount; d++ )
 			{
-				_raycastDirection.x = 1.0f;
-				_raycastDirection.y = 0.0f;
-				_raycastDirection.x *= directionX;
-				_raycastDirection.y *= directionX;
-
-				var hitCount = Physics2D.RaycastNonAlloc( rayOrigin, _raycastDirection, _raycastHit2D, rayLength, this.collisionMask );
-				for( int j = 0; j < hitCount; j++ )
+				directionX = d == 0 ? directionX : -directionX;
+				var rayOrigin = ( directionX == 1 ) ? _raycastOrigins.bottomRight : _raycastOrigins.bottomLeft;
+				var rayLength = Mathf.Abs( _movement.x ) + _shrinkWidth;
+				if( _movement.x == 0f )
 				{
-					var hit = _raycastHit2D[j];
-					if( _ignoredColliders.Contains( hit.collider ) )
-					{
-						continue;
-					}
-					HandleHorizontalHitResult( hit, directionX );
+					rayLength += _expandWidth;
 				}
-				rayOrigin.y += _horizontalRaySpace;
+
+				for( int i = 0; i < this.horizontalRayCount; i++ )
+				{
+					_raycastDirection.x = 1.0f;
+					_raycastDirection.y = 0.0f;
+					_raycastDirection.x *= directionX;
+					_raycastDirection.y *= directionX;
+
+					if( JPhysicsManager.useUnityRayCast )
+					{
+						var hitCount = Physics2D.RaycastNonAlloc( rayOrigin, _raycastDirection, _raycastHit2D, rayLength, this.collisionMask );
+						for( int j = 0; j < hitCount; j++ )
+						{
+							var hit = _raycastHit2D[j];
+							if( _ignoredColliders.Contains( hit.collider ) )
+							{
+								continue;
+							}
+							HandleHorizontalHitResult( hit.collider, hit.point, hit.distance, directionX );
+						}
+					}
+					else
+					{
+						_jraycastHitList.Clear();
+						JPhysics.Raycast( JPhysicsManager.instance.quadTree, rayOrigin, _raycastDirection, ref _jraycastHitList, rayLength, this.collisionMask );
+						for( int j = 0; j < _jraycastHitList.count; j++ )
+						{
+							var hit = _jraycastHitList[j];
+							if( _ignoredColliders.Contains( hit.collider ) )
+							{
+								continue;
+							}
+							HandleHorizontalHitResult( hit.collider, hit.point, hit.distance, directionX );
+						}
+					}
+					rayOrigin.y += _horizontalRaySpace;
+				}
 			}
 		}
 
-		private void HandleHorizontalHitResult( RaycastHit2D hit, int directionX )
+		private void HandleHorizontalHitResult( Collider2D hitCollider, Vector2 hitPoint, float hitDistance, int directionX )
 		{
 			var myLayer = this.gameObject.layer;
-			var hitCollider = hit.collider;
-
 			//Trigger
-			if( HitTrigger( hit, directionX, null ) )
+			if( HitTrigger( hitCollider, hitPoint, directionX, null ) )
 			{
 				return;
 			}
@@ -266,10 +305,9 @@ namespace J2P
 			// Collision Info
 			_collisionInfo.collider = this.selfCollider;
 			_collisionInfo.hitCollider = hitCollider;
-			_collisionInfo.position = hit.point;
+			_collisionInfo.position = hitPoint;
 
 			// Collision Direction
-			var hitDistance = hit.distance;
 			if( directionX == -1 )
 			{
 				_collisionInfo.isLeftCollision = true;
@@ -298,41 +336,75 @@ namespace J2P
 
 		private void VerticalCollisionDetect()
 		{
-			var directionY = _movement.y > 0 ? 1 : -1;
-			var rayOrigin = ( directionY == 1 ) ? _raycastOrigins.topLeft : _raycastOrigins.bottomLeft;
-			rayOrigin.x += _movement.x;
-
-			var rayLength = Mathf.Abs( _movement.y ) + _shrinkWidth;
-			for( int i = 0; i < this.verticalRayCount; i++ )
+			int detectionCount = 1;
+			if( _movement.y == 0 )
 			{
-				_raycastDirection.x = 0.0f;
-				_raycastDirection.y = 1.0f;
-				_raycastDirection.x *= directionY;
-				_raycastDirection.y *= directionY;
-				var hitCount = Physics2D.RaycastNonAlloc( rayOrigin, _raycastDirection, _raycastHit2D, rayLength, this.collisionMask );
-				for( int j = 0; j < hitCount; j++ )
+				if( this.collisionDetectionMode != CollisionDetectionMode.WhenMoving )
 				{
-					var hit = _raycastHit2D[j];
-
-					var hitCollider = hit.collider;
-					// Ignored Collider?
-					if( _ignoredColliders.Contains( hitCollider ) )
-					{
-						continue;
-					}
-					HandleVerticalHitResult( hit, directionY );
+					detectionCount = 2;
 				}
+			}
 
-				rayOrigin.x += _verticalRaySpace;
+			var directionY = _movement.y > 0 ? 1 : -1;
+
+			for( int d = 0; d < detectionCount; d++ )
+			{
+				directionY = d == 0 ? directionY : -directionY;
+				var rayOrigin = ( directionY == 1 ) ? _raycastOrigins.topLeft : _raycastOrigins.bottomLeft;
+				rayOrigin.x += _movement.x;
+
+				var rayLength = Mathf.Abs( _movement.y ) + _shrinkWidth;
+				if( _movement.y == 0f )
+				{
+					rayLength += _expandWidth;
+				}
+				for( int i = 0; i < this.verticalRayCount; i++ )
+				{
+					_raycastDirection.x = 0.0f;
+					_raycastDirection.y = 1.0f;
+					_raycastDirection.x *= directionY;
+					_raycastDirection.y *= directionY;
+					if( JPhysicsManager.useUnityRayCast )
+					{
+						var hitCount = Physics2D.RaycastNonAlloc( rayOrigin, _raycastDirection, _raycastHit2D, rayLength, this.collisionMask );
+						for( int j = 0; j < hitCount; j++ )
+						{
+							var hit = _raycastHit2D[j];
+
+							var hitCollider = hit.collider;
+							// Ignored Collider?
+							if( _ignoredColliders.Contains( hitCollider ) )
+							{
+								continue;
+							}
+							HandleVerticalHitResult( hit.collider, hit.point, hit.distance, directionY );
+						}
+					}
+					else
+					{
+						_jraycastHitList.Clear();
+						JPhysics.Raycast( JPhysicsManager.instance.quadTree, rayOrigin, _raycastDirection, ref _jraycastHitList, rayLength, this.collisionMask );
+						for( int j = 0; j < _jraycastHitList.count; j++ )
+						{
+							var hit = _jraycastHitList[j];
+							if( _ignoredColliders.Contains( hit.collider ) )
+							{
+								continue;
+							}
+							HandleVerticalHitResult( hit.collider, hit.point, hit.distance, directionY );
+						}
+					}
+
+					rayOrigin.x += _verticalRaySpace;
+				}
 			}
 		}
 
-		private void HandleVerticalHitResult( RaycastHit2D hit, int directionY )
+		private void HandleVerticalHitResult( Collider2D hitCollider, Vector2 hitPoint, float hitDistance, int directionY )
 		{
 			var myLayer = this.gameObject.layer;
-			var hitCollider = hit.collider;
 			// Trigger?
-			if( HitTrigger( hit, null, directionY ) )
+			if( HitTrigger( hitCollider, hitPoint, null, directionY ) )
 			{
 				return;
 			}
@@ -340,9 +412,8 @@ namespace J2P
 			// Collision Info
 			_collisionInfo.collider = this.selfCollider;
 			_collisionInfo.hitCollider = hitCollider;
-			_collisionInfo.position = hit.point;
+			_collisionInfo.position = hitPoint;
 
-			var hitDistance = hit.distance;
 			// Collision Direction
 			if( directionY == -1 )
 			{
@@ -370,16 +441,15 @@ namespace J2P
 			}
 		}
 
-		private bool HitTrigger( RaycastHit2D hit, int? directionX, int? directionY )
+		private bool HitTrigger( Collider2D hitCollider, Vector2 point, int? directionX, int? directionY )
 		{
-			var hitCollider = hit.collider;
 			// Trigger?
 			if( hitCollider.isTrigger || _colliderIsTrigger )
 			{
 				_triggerInfo.collider = this.selfCollider;
 				_triggerInfo.hitCollider = hitCollider;
-				_triggerInfo.position.x = hit.point.x;
-				_triggerInfo.position.y = hit.point.y;
+				_triggerInfo.position.x = point.x;
+				_triggerInfo.position.y = point.y;
 				if( directionY.HasValue )
 				{
 					if( directionY.Value == -1 )

@@ -18,7 +18,10 @@ namespace J2P
 		public int verticalRayCount = 4;
 
 		//When collision detection, place the start point at the vertex of the bounds with zoom in by this distance
-		public float _shrinkWidth = 0.1f;
+		protected float _shrinkWidth = 0.1f;
+
+		//When movement is zero, rayLength = _shringkWidth + _expandWidth
+		protected float _expandWidth = 0.1f;
 
 		public CollisionEvent onCollisionEnter;
 
@@ -50,7 +53,11 @@ namespace J2P
 
 		protected RaycastHit2D[] _raycastHit2D;
 
-		private PositionInQuadTree _posInQuadTree;
+		protected JRaycastHitList _jraycastHitList;
+
+		private PositionInQuadTree _lastPosInQuadTree;
+
+		private PositionInQuadTree _currentPosInQuadTree;
 
 		private Rect _rect;
 
@@ -86,15 +93,27 @@ namespace J2P
 			}
 		}
 
-		public PositionInQuadTree posInQuadTree
+		public PositionInQuadTree lastPosInQuadTree
 		{
 			get
 			{
-				return _posInQuadTree;
+				return _lastPosInQuadTree;
 			}
 			set
 			{
-				_posInQuadTree = value;
+				_lastPosInQuadTree = value;
+			}
+		}
+
+		public PositionInQuadTree currentPosInQuadTree
+		{
+			get
+			{
+				return _currentPosInQuadTree;
+			}
+			set
+			{
+				_currentPosInQuadTree = value;
 			}
 		}
 
@@ -113,7 +132,14 @@ namespace J2P
 			_rect = new Rect( rectMin, _bounds.size );
 
 			_raycastHit2D = new RaycastHit2D[_maxHitCollidersCount];
+			_jraycastHitList = new JRaycastHitList( _maxHitCollidersCount );
 			_transform = this.gameObject.transform;
+		}
+
+		public void InitializePosInQuadTree( QuadTree quadTree )
+		{
+			_lastPosInQuadTree = new PositionInQuadTree( quadTree.GetDepth( this.size ) );
+			_currentPosInQuadTree = new PositionInQuadTree( quadTree.GetDepth( this.size ) );
 		}
 
 		private void OnDestroy()
@@ -126,6 +152,11 @@ namespace J2P
 
 		public virtual void Simulate( float deltaTime )
 		{
+		}
+
+		protected void UpdateRect()
+		{
+			_rect.center = _transform.position;
 		}
 
 		protected void CalculateRaySpace( ref Bounds bounds )

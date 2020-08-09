@@ -32,7 +32,7 @@ namespace J2P
 			count = 0;
 		}
 
-		public void Add( JRaycastHit hit )
+		public void Add( Collider2D collider,float distance,Vector2 point )
 		{
 			if( count >= hits.Length )
 			{
@@ -40,9 +40,16 @@ namespace J2P
 			}
 			else
 			{
-				hits[count] = hit;
+				hits[count].collider = collider;
+				hits[count].distance = distance;
+				hits[count].point = point;
 				count++;
 			}
+		}
+
+		public void Clear()
+		{
+			count = 0;
 		}
 	}
 

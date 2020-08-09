@@ -13,13 +13,13 @@ namespace J2P
 
 		public Vector2 bottomRight;
 
-		public bool topLeftInCollider;
+		//public bool topLeftInCollider;
 
-		public bool topRightInCollider;
+		//public bool topRightInCollider;
 
-		public bool bottomLeftInCollider;
+		//public bool bottomLeftInCollider;
 
-		public bool bottomRightInCollider;
+		//public bool bottomRightInCollider;
 
 		public void Reset()
 		{
@@ -35,10 +35,10 @@ namespace J2P
 			this.topRight.x = 0.0f;
 			this.topRight.y = 0.0f;
 
-			this.bottomLeftInCollider = false;
-			this.bottomRightInCollider = false;
-			this.topLeftInCollider = false;
-			this.topRightInCollider = false;
+			//this.bottomLeftInCollider = false;
+			//this.bottomRightInCollider = false;
+			//this.topLeftInCollider = false;
+			//this.topRightInCollider = false;
 		}
 	}
 }
