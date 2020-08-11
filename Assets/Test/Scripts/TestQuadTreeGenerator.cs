@@ -19,6 +19,7 @@ namespace J2P.Test
 			var worldRect = new Rect( rectPos, new Vector2( width, height ) );
 			JPhysicsManager.instance.CreateQuadTree( worldRect, maxDepth );
 			JPhysicsManager.instance.quadTree.debug = true;
+			JPhysicsManager.useUnityRayCast = false;
 		}
 
 #if UNITY_EDITOR

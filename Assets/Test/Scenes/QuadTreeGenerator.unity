@@ -204,7 +204,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: c48af4c4f8e4c0f4296154d38f141881, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -244,8 +244,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1474623263}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 20.5, y: 10.4, z: 0}
-  m_LocalScale: {x: 6.4485292, y: 4.163205, z: 1}
+  m_LocalPosition: {x: 31.3, y: -3, z: 0}
+  m_LocalScale: {x: 6.950225, y: 7.034151, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -291,9 +291,9 @@ MonoBehaviour:
   collisionMask: 0
   horizontalRayCount: 4
   verticalRayCount: 4
-  _shrinkWidth: 0.1
   showDebugGizoms: 0
   gravityScale: 0
+  collisionDetectionMode: 1
 --- !u!1 &2039651237
 GameObject:
   m_ObjectHideFlags: 0
