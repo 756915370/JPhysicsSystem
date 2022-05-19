@@ -82,26 +82,12 @@ namespace J2P
 			int tempRow = row;
 			int tempColumn = column;
 
-			var storeDepth = 0;
-			posInfo.storeDepth = depth;
-			for( int i = depth - 1; i >= 0; i-- )
+			var storeDepth = posInfo.storeDepth = depth;
+			for (int i = 0; i < depth; i++)
 			{
-				int div = (int)Mathf.Pow( 2, i );
-				int rowIndex = tempRow / div;
-				if( rowIndex > 1 )
-				{
-					rowIndex = 1;
-				}
-				int columnIndex = tempColumn / div;
-				if( columnIndex > 1 )
-				{
-					columnIndex = 1;
-				}
-				tempRow %= div;
-				tempColumn %= div;
-				posInfo.posInDepths[storeDepth].rowIndex = rowIndex;
-				posInfo.posInDepths[storeDepth].columnIndex = columnIndex;
-				storeDepth++;
+				storeDepth--;
+				posInfo.posInDepths[storeDepth].rowIndex = (row >> i) & 1;
+				posInfo.posInDepths[storeDepth].columnIndex = (column >> i) & 1;
 			}
 		}
 
